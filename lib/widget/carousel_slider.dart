@@ -4,9 +4,9 @@ import 'package:testapp/screen/detail_screen.dart';
 import '../model/model_movie.dart';
 
 class CarouselImage extends StatefulWidget {
-  final List<Movie>? movies;
+  final List<Movie> movies;
 
-  CarouselImage({Key? key, required this.movies}) : super(key: key);
+  CarouselImage({required this.movies});
 
   _CarouselImageState createState() => _CarouselImageState();
 }
@@ -23,7 +23,7 @@ class _CarouselImageState extends State<CarouselImage> {
   void initState() {
     super.initState();
     movies = widget.movies;
-    images = movies?.map((m) => Image.asset('./images/' + m.poster)).toList();
+    images = movies?.map((m) => Image.network(m.poster)).toList();
     keywords = movies?.map((m) => m.keyword).toList();
     likes = movies?.map((m) => m.like).toList();
     _currentKeyword = keywords![0];
@@ -46,7 +46,7 @@ class _CarouselImageState extends State<CarouselImage> {
                 });
               })),
           Container(
-            padding: EdgeInsets.fromLTRB(0, 10, 0, 3),
+            padding: EdgeInsets.fromLTRB(0 , 10, 0, 3),
             child: Text(
               _currentKeyword,
               style: TextStyle(fontSize: 11),
@@ -61,13 +61,27 @@ class _CarouselImageState extends State<CarouselImage> {
                     children: <Widget>[
                       likes![_currentPage]
                           ? IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.check),
-                      )
+                              onPressed: () {
+                                setState(() {
+                                  likes![_currentPage] = !likes![_currentPage];
+                                  movies?[_currentPage]
+                                      ?.reference
+                                      .update({'like': likes![_currentPage]});
+                                });
+                              },
+                              icon: Icon(Icons.check),
+                            )
                           : IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.add),
-                      ),
+                              onPressed: () {
+                                setState(() {
+                                  likes![_currentPage] = !likes![_currentPage];
+                                  movies![_currentPage]
+                                      ?.reference
+                                      .update({'like': likes![_currentPage]});
+                                });
+                              },
+                              icon: Icon(Icons.add),
+                            ),
                       Text(
                         '내가 찜한 컨텐츠',
                         style: TextStyle(fontSize: 11),
@@ -79,7 +93,7 @@ class _CarouselImageState extends State<CarouselImage> {
                   padding: EdgeInsets.only(right: 10),
                   child: TextButton(
                     style:
-                    ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                        ElevatedButton.styleFrom(backgroundColor: Colors.white),
                     onPressed: () {},
                     child: Row(children: <Widget>[
                       Icon(
@@ -102,10 +116,12 @@ class _CarouselImageState extends State<CarouselImage> {
                     children: <Widget>[
                       IconButton(
                         onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute<Null>(
+                          Navigator.of(context).push(MaterialPageRoute<void>(
                               fullscreenDialog: true,
                               builder: (BuildContext context) {
-                                return DetailScreen(movie: movies![_currentPage],);
+                                return DetailScreen(
+                                  movie: movies![_currentPage],
+                                );
                               }));
                         },
                         icon: Icon(Icons.info),
@@ -136,8 +152,8 @@ List<Widget> makeIndicator(List list, int _currentPage) {
   List<Widget> results = [];
   for (var i = 0; i < list.length; i++) {
     results.add(Container(
-      width: 0,
-      height: 0,
+      width: 8,
+      height: 8,
       margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
       decoration: BoxDecoration(
           shape: BoxShape.circle,

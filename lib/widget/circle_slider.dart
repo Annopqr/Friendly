@@ -38,15 +38,15 @@ List<Widget> makeCircleImage(BuildContext context, List<Movie> movies) {
             Navigator.of(context).push(MaterialPageRoute<Null>(
                 fullscreenDialog: true,
                 builder: (BuildContext context) {
-                  return DetailScreen(movie: movies![i],);
+                  return DetailScreen(movie: movies[i],);
                 }));
           },
           child: Container(
             padding: EdgeInsets.only(right: 10),
             child: Align(
               alignment: Alignment.centerLeft, child: CircleAvatar(
-              backgroundImage: AssetImage(
-                  'images/' + movies[i].poster
+              backgroundImage: NetworkImage(
+                  movies[i].poster
               ),
               radius: 48,
              ),
